@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  analytics-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: realtime_analytics_dashboard
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - STREAM_INTERVAL_MS=1500
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - analytics-net
+
+networks:
+  analytics-net:
+    driver: bridge
+
